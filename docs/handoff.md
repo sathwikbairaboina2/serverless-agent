@@ -60,3 +60,26 @@
 - Vitest `globals: true` in the runtime and integration configs (the validation package uses global `beforeAll`); construct vitest config is `.mts`.
 
 **How to verify:** `pnpm install && pnpm build && pnpm test && pnpm synth`; with a token: `pnpm local:up && pnpm local:deploy && pnpm test:integration`.
+
+## 2026-10-04 · Claude (Opus, lead) · branch main (committed locally, not pushed)
+
+**Changed (finish run, plan `docs/superpowers/plans/2026-10-04-finish.md`):**
+- Committed all v0.1 work as logical conventional commits on `main`. No remote, nothing pushed.
+- Integration tests skip cleanly without `LOCALSTACK_AUTH_TOKEN` (SKIPPED, exit 0). With a token but no LocalStack they exit 2 with BLOCKER. `pnpm local:deploy` without a token exits 2 before building.
+- Fixed the local Ollama runner crash on piped stdin (`ERR_USE_AFTER_CLOSE`).
+- Added the MIT `LICENSE`. README now leads with the measured conformance result (718/718); cost stays a labelled estimate.
+- Rewrote `docs/DEVDOCS.md` as a short developer guide (what it is, quickstart, architecture, layout, commands, decisions, limits).
+- Note: two consecutive commits share the subject "docs: lead README with measured conformance result" (one is ledger-only). Left as is; no history rewrite.
+
+**Verified (2026-10-04, Opus, real output):**
+- `pnpm install --frozen-lockfile` 0; `pnpm typecheck` 0; `pnpm test` 0 with runtime 814 + construct 48 + mock-llm 7 = 869 tests; conformance file alone 718/718.
+- `pnpm synth` 0: Example 40 resources, Local 26. IAM wildcard check: Example 40 actions `[]`, Local 35 actions `[]`.
+- Token unset: `pnpm test:integration` 0 SKIPPED; integration package direct run 0 (3 files, 5 tests skipped); integration typecheck 0; `pnpm local:deploy` 2 with ERROR. `LOCALSTACK_AUTH_TOKEN=dummy pnpm test:integration` 2 with BLOCKER.
+- No `serverless-agent-*` containers running. `git ls-files` has no build artifacts or secrets.
+
+**Left for the user:**
+- Get a free LocalStack Hobby token and run `pnpm local:up && pnpm local:deploy && pnpm test:integration` (never run; expect small emulation fixes).
+- Real AWS deploy and measured latency/cost.
+- npm scope, projen/jsii, npm and Construct Hub publish. Pushing to a remote.
+
+**How to verify:** `pnpm install --frozen-lockfile && pnpm typecheck && pnpm test && pnpm synth && pnpm test:integration` (the last prints SKIPPED without a token). See `docs/DEVDOCS.md` section 5.

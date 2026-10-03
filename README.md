@@ -118,7 +118,7 @@ Without a token, `pnpm test:integration` prints `SKIPPED` (not run) and exits 0;
 
 ## Testing
 
-Measured on 2026-10-03 (see [DEVDOCS section 14](docs/DEVDOCS.md#14-results-v01)):
+Measured on 2026-10-04 (see [DEVDOCS section 5](docs/DEVDOCS.md#5-run-test-and-benchmark)):
 
 - `pnpm test`: 26 test files, 869 tests pass, with no network, Docker or AWS credentials. Runtime 814 (including the official LangGraph checkpointer conformance suite, 718 of 718 passing, run against an in-memory DynamoDB fake), construct 48 (CDK assertions and IAM invariants), mock LLM 7.
 - `pnpm synth`: synthesizes `ServerlessAgentExample` (40 resources) and `ServerlessAgentLocal` (26 resources) with no credentials. Neither template has a wildcard IAM action.
