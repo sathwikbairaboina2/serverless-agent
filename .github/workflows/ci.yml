@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm synth
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: unit
+    env:
+      LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+    steps:
+      - name: Report missing LocalStack token
+        if: env.LOCALSTACK_AUTH_TOKEN == ''
+        run: echo "::warning::LOCALSTACK_AUTH_TOKEN secret is not set; LocalStack integration tests were NOT run (LocalStack 2026.03+ requires a token, see docs/adr/0009)."
+      - uses: actions/checkout@v4
+        if: env.LOCALSTACK_AUTH_TOKEN != ''
+      - uses: pnpm/action-setup@v4
+        if: env.LOCALSTACK_AUTH_TOKEN != ''
+      - uses: actions/setup-node@v4
+        if: env.LOCALSTACK_AUTH_TOKEN != ''
+        with:
+          node-version: 24
+          cache: pnpm
+      - if: env.LOCALSTACK_AUTH_TOKEN != ''
+        run: pnpm install --frozen-lockfile
+      - if: env.LOCALSTACK_AUTH_TOKEN != ''
+        run: pnpm local:up
+      - if: env.LOCALSTACK_AUTH_TOKEN != ''
+        run: pnpm local:deploy
+      - if: env.LOCALSTACK_AUTH_TOKEN != ''
+        run: pnpm test:integration
+      - if: always() && env.LOCALSTACK_AUTH_TOKEN != ''
+        run: docker compose logs --no-color localstack | tail -200
