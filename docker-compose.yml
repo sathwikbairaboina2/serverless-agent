@@ -1,0 +1,41 @@
+name: serverless-agent
+
+services:
+  localstack:
+    image: localstack/localstack:${LOCALSTACK_VERSION:-latest}
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      # LocalStack 2026.03+ refuses to start without a token (ADR 0009). Free Hobby plan = non-commercial use.
+      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN:?LOCALSTACK_AUTH_TOKEN is not set. LocalStack 2026.03+ requires it; create a free Hobby token at app.localstack.cloud and export it.}
+      LAMBDA_DOCKER_NETWORK: serverless-agent-net
+      DEBUG: "0"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks: [net]
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  mock-llm:
+    image: node:24-alpine
+    working_dir: /app
+    command: ["node", "server.mjs"]
+    environment:
+      PORT: "8080"
+    volumes:
+      - "./docker/mock-llm:/app:ro"
+    ports:
+      - "127.0.0.1:18080:8080"
+    networks: [net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+networks:
+  net:
+    name: serverless-agent-net
