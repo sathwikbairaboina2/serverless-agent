@@ -56,3 +56,5 @@ Finish task 5: complete (runtime 18 files/814 tests, typecheck 0; `echo n | MODE
 Finish task 6: complete (LICENSE added, README License section) | commit: "docs: add MIT license"
 Finish task 7: complete (README headline now conformance 718/718, 869 tests (866 + 3 from task 5; reconfirmed in task 9), zero IAM wildcards; cost kept as labelled estimate) | commit: "docs: lead README with measured conformance result"
 Finish task 8: complete (docker run serverless-agent-mock-llm on 127.0.0.1:5470 -> /health {"ok":true}; removed, docker ps --filter name=serverless-agent- empty)
+Finish task 9: complete (clean tree rebuild: install 0, typecheck 0, test 0 = runtime 814 + construct 48 + mock-llm 7 = 869, conformance 718/718; synth 0, IAM wildcards [] for Example (40 actions) and Local (35 actions); token unset test:integration 0 SKIPPED, integration-tests test 5 skipped; dummy token 2; local:deploy 2; integration typecheck 0; git status clean; no artifacts tracked; no containers)
+Finish task 10: complete (DEVDOCS s8/s9/s14, README, ADR 0009 addendum, handoff test count updated; plan boxes ticked) | commit: "docs: record v0.1 finish verification"

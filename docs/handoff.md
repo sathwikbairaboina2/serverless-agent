@@ -43,7 +43,7 @@
 - The per-task ledger with rulings is in `.superpowers/sdd/progress.md`.
 
 **Verified (2026-10-03, clean tree, real output in DEVDOCS section 14):**
-- `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build` (bundle 2.25 MiB), `pnpm test` (25 files, 866 tests: runtime 811 incl. conformance 718/718, construct 48, mock-llm 7) and `pnpm synth` (Example 40 resources / 46,111 bytes, Local 26 resources / 32,307 bytes) all exit 0.
+- `pnpm install --frozen-lockfile`, `pnpm typecheck`, `pnpm build` (bundle 2.25 MiB), `pnpm test` (25 files, 866 tests at that time; now 26 files/869: runtime 814 incl. conformance 718/718, construct 48, mock-llm 7) and `pnpm synth` (Example 40 resources / 46,111 bytes, Local 26 resources / 32,307 bytes) all exit 0.
 - IAM wildcard check on both synthesized templates: no wildcard actions.
 - `docker compose config` fails fast without a token and passes with a dummy token in the environment; the mock-llm container answered a health check; actionlint passed on the CI file.
 

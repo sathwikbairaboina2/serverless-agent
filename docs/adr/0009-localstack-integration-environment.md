@@ -56,3 +56,8 @@ Status: accepted, 2026-10-03 (user rule: every AWS dependency runs on LocalStack
   - Bedrock in the loop locally.
   - The `cdk deploy` UX locally; the SDK deploy script is about 120 lines we own.
 - The approval-callback integration test cannot learn the real approval id: only its hash is stored, and the id is sent only over WebSocket, which is disabled locally. The test copies the real task token into a test-seeded approval item with a known id, then calls the real REST endpoint. This covers HTTPS → Lambda → DynamoDB claim → `SendTaskSuccess` → state machine resume → completion. Id generation and delivery are covered by unit tests.
+
+
+## Addendum 2026-10-04: skip and fail-fast behaviour
+
+The rule "integration tests never skip" is narrowed. With `LOCALSTACK_AUTH_TOKEN` unset, the integration suites skip and the entry point prints `SKIPPED` (not run) with exit 0, so CI and fresh clones stay green without pretending the tests passed. With the token set and LocalStack unreachable, the BLOCKER (exit 2) stays. `pnpm local:deploy` without a token exits 2 before building, because a deploy that did nothing must not report success.

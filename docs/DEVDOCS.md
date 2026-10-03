@@ -285,7 +285,7 @@ pnpm test:integration                  # checkpointer conformance + invoke path 
 pnpm local:down
 ```
 
-`scripts/with-localstack-env.mjs` forces `AWS_ENDPOINT_URL=http://localhost:4566` and `test` credentials, so a local command can never reach real AWS. If LocalStack is not reachable, it exits 2 with a BLOCKER message.
+`scripts/with-localstack-env.mjs` forces `AWS_ENDPOINT_URL=http://localhost:4566` and `test` credentials, so a local command can never reach real AWS. If `LOCALSTACK_AUTH_TOKEN` is unset, the integration entry point prints SKIPPED and exits 0, and `local:deploy` exits 2. If the token is set and LocalStack is not reachable, it exits 2 with a BLOCKER message.
 
 **Ollama (optional, manual):** `MODEL_ID=<tool-capable model> pnpm --filter @serverless-agent/runtime run local -- "email bob"` runs the same graph against `http://localhost:11434/v1` with interactive approvals.
 
@@ -306,7 +306,7 @@ Fakes:
 - `FakeDocumentClient` understands only the exact expressions the saver emits and throws on anything else. It mimics undefined-value rejection, pagination, conditional failures and unprocessed batch items.
 - `ScriptedChatModel` returns queued `AIMessage`s.
 
-Integration tests never skip. Without LocalStack they fail with an explicit BLOCKER.
+Integration tests never skip silently. With `LOCALSTACK_AUTH_TOKEN` unset, `pnpm test:integration` prints `SKIPPED` (not run) and exits 0, and a direct Vitest run reports every integration test as skipped. With the token set but LocalStack down, it exits 2 with an explicit BLOCKER. `pnpm local:deploy` without a token exits 2 before building (a deploy that did nothing must not report success).
 
 ## 10. Cost model (estimates)
 
@@ -412,19 +412,19 @@ Measured on 2026-10-03 on Windows 11 (Git Bash and PowerShell), Node v24.18.0, p
 | `pnpm install --frozen-lockfile` | 0 | lockfile up to date; `pnpm why vitest -r` shows only vitest 4.1.11 |
 | `pnpm typecheck` (builds first, because the example and integration packages import built `lib` output) | 0 | runtime, construct, integration and example all pass |
 | `pnpm build` | 0 | `bundled runtime -> assets\runtime\index.mjs (2.25 MiB)` |
-| `pnpm test` | 0 | 25 test files, 866 tests, all passing (details below) |
+| `pnpm test` | 0 | 26 test files, 869 tests, all passing (details below) |
 | `pnpm synth` | 0 | writes both templates, no credentials |
 | `pnpm --filter @serverless-agent/integration-tests typecheck` | 0 | |
-| `pnpm test:integration` | **2** | BLOCKER, see below |
+| `pnpm test:integration` (token unset) | 0 | prints SKIPPED, not run (2026-10-04); with `LOCALSTACK_AUTH_TOKEN=dummy` and no LocalStack it exits 2 with BLOCKER; `pnpm local:deploy` without a token exits 2 before building |
 
 **Test counts.**
 
 | Package | Files | Tests |
 |---|---|---|
-| `@serverless-agent/runtime` | 17 | 811 |
+| `@serverless-agent/runtime` | 18 | 814 |
 | `@serverless-agent/construct` | 7 | 48 |
 | `@serverless-agent/mock-llm` | 1 | 7 |
-| **Total** | **25** | **866** |
+| **Total** | **26** | **869** |
 
 **Conformance suite:** 718 passed out of 718, no skips (`test/checkpointer/conformance.test.ts`, against the in-memory DynamoDB fake). Runtime breakdown: 718 conformance, 22 saver unit tests, 10 fake-client tests, 61 other tests (metrics, notify, config, model, graph, handlers, exports, smoke).
 
@@ -451,6 +451,6 @@ Start it with "pnpm local:up". LocalStack 2026.03+ requires LOCALSTACK_AUTH_TOKE
 
 and exited with code 2. Running the three integration files directly with Vitest fails each of them with `BLOCKER: LocalStack not reachable at http://localhost:4566 (fetch failed). Run "pnpm local:up" with LOCALSTACK_AUTH_TOKEN set (ADR 0009).`. `examples/basic/scripts/deploy-local.mjs` passes `node --check` but has never been executed against LocalStack. The invoke path and the approval callback have therefore only been proven by unit tests.
 
-**Local runner (optional).** Ollama was running with `qwen3.8:27b`. `pnpm --filter @serverless-agent/runtime run local` made the model propose `send_email` and reached the `approve? [y/N]` prompt, so the `interrupt()` gate works against a real model. With piped stdin the script then exited with `ERR_USE_AFTER_CLOSE` (readline closes at end of input). An interactive terminal run was not done.
+**Local runner (optional).** Ollama was running with `qwen3.8:27b`. `pnpm --filter @serverless-agent/runtime run local` made the model propose `send_email` and reached the `approve? [y/N]` prompt, so the `interrupt()` gate works against a real model. With piped stdin the script first exited with `ERR_USE_AFTER_CLOSE`; fixed on 2026-10-04 (answers now come from buffered stdin lines, EOF declines). `echo n | MODEL_ID=qwen3.8:27b pnpm --filter @serverless-agent/runtime run local -- "Please email bob@example.com saying hello"` reached the approval prompt, declined, and exited 0. An interactive terminal run was not done.
 
 **Not measured:** cold start, step latency and real AWS cost (no real AWS deploy). The cost figures in this document and in `docs/cost-estimate.md` remain estimates.

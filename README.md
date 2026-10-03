@@ -114,15 +114,15 @@ pnpm local:down
 
 The local stack uses the Hobby-plan profile: no WebSocket API (API Gateway v2 is not in Hobby), a mock LLM instead of Bedrock, and an SDK deploy instead of `cdk bootstrap` (ECR is not in Hobby). See [ADR 0009](docs/adr/0009-localstack-integration-environment.md).
 
-Without a token, `pnpm test:integration` fails loudly with a `BLOCKER` message and never skips or fakes results.
+Without a token, `pnpm test:integration` prints `SKIPPED` (not run) and exits 0; with a token but no LocalStack it exits 2 with a `BLOCKER` message. `pnpm local:deploy` without a token exits 2 before building. Nothing is faked.
 
 ## Testing
 
 Measured on 2026-10-03 (see [DEVDOCS section 14](docs/DEVDOCS.md#14-results-v01)):
 
-- `pnpm test`: 25 test files, 866 tests pass, with no network, Docker or AWS credentials. Runtime 811 (including the official LangGraph checkpointer conformance suite, 718 of 718 passing, run against an in-memory DynamoDB fake), construct 48 (CDK assertions and IAM invariants), mock LLM 7.
+- `pnpm test`: 26 test files, 869 tests pass, with no network, Docker or AWS credentials. Runtime 814 (including the official LangGraph checkpointer conformance suite, 718 of 718 passing, run against an in-memory DynamoDB fake), construct 48 (CDK assertions and IAM invariants), mock LLM 7.
 - `pnpm synth`: synthesizes `ServerlessAgentExample` (40 resources) and `ServerlessAgentLocal` (26 resources) with no credentials. Neither template has a wildcard IAM action.
-- `pnpm test:integration`: needs Docker, LocalStack and a token. **Not run yet**: it exits with `BLOCKER: LocalStack is not reachable at http://localhost:4566` because `LOCALSTACK_AUTH_TOKEN` is not set on the machine that built v0.1.
+- `pnpm test:integration`: needs Docker, LocalStack and a token. **Never run against LocalStack yet**: `LOCALSTACK_AUTH_TOKEN` was not available on the machine that built v0.1. Without the token it reports SKIPPED (exit 0); with a dummy token and no LocalStack it exits 2 with `BLOCKER`.
 
 ## Decisions
 
