@@ -3,7 +3,7 @@ import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { assertLocalStackReady, clientConfig, loadOutputs, type LocalOutputs } from './support/localstack.js';
+import { assertLocalStackReady, hasToken, clientConfig, loadOutputs, type LocalOutputs } from './support/localstack.js';
 
 const lambda = new LambdaClient(clientConfig);
 const doc = DynamoDBDocumentClient.from(new DynamoDBClient(clientConfig));
@@ -16,7 +16,7 @@ async function invoke(payload: unknown): Promise<any> {
   return body;
 }
 
-describe('invoke path (agentStep Lambda on LocalStack, mock LLM)', () => {
+describe.skipIf(!hasToken)('invoke path (agentStep Lambda on LocalStack, mock LLM)', () => {
   beforeAll(async () => { await assertLocalStackReady(); out = loadOutputs(); });
 
   it('completes a run that uses a safe tool and reports usage', async () => {

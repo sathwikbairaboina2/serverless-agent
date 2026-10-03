@@ -4,7 +4,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DeleteCommand, DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { hashApprovalId } from '@serverless-agent/runtime';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { assertLocalStackReady, clientConfig, loadOutputs, restApiUrl, waitFor, type LocalOutputs } from './support/localstack.js';
+import { assertLocalStackReady, hasToken, clientConfig, loadOutputs, restApiUrl, waitFor, type LocalOutputs } from './support/localstack.js';
 
 const sfn = new SFNClient(clientConfig);
 const doc = DynamoDBDocumentClient.from(new DynamoDBClient(clientConfig));
@@ -42,7 +42,7 @@ async function finished(executionArn: string) {
   });
 }
 
-describe('Step Functions approval callback on LocalStack', () => {
+describe.skipIf(!hasToken)('Step Functions approval callback on LocalStack', () => {
   beforeAll(async () => { await assertLocalStackReady(); out = loadOutputs(); });
 
   it('approve: HTTPS callback resumes the execution, the tool runs, the run succeeds', async () => {

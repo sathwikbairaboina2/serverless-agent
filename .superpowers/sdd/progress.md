@@ -49,3 +49,6 @@ Ruling: without LOCALSTACK_AUTH_TOKEN, test:integration and direct vitest skip w
 Finish plan: 10 tasks; builder appends "Finish task N: complete (...)" lines below
 Finish task 1: complete (install frozen exit 0; typecheck exit 0; test runtime 811 + construct 48 + mock-llm 7 = 866; synth exit 0) | commit: none
 Finish task 2: complete (8 logical commits; git status checked clean of artifacts) | commit: "docs: add README, cost estimate and handoff"
+Ruling: local:deploy fail-fast is the same wrapper with --require-token run first in the script chain (it then also health-checks LocalStack before building); tasks 3 and 4 share one commit because both touch the wrapper and package.json - tiny; no cost
+Finish task 3: complete (token unset: test:integration exit 0 SKIPPED; integration-tests test exit 0, 3 files/5 tests skipped; LOCALSTACK_AUTH_TOKEN=dummy test:integration exit 2 BLOCKER; integration typecheck exit 0) | commit: "test(integration): skip cleanly when LOCALSTACK_AUTH_TOKEN is unset"
+Finish task 4: complete (token unset: pnpm local:deploy exit 2 with ERROR message, no build output) | commit: same as task 3

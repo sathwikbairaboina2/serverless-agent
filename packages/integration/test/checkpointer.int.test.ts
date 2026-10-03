@@ -2,13 +2,15 @@ import { CreateTableCommand, DeleteTableCommand, DynamoDBClient, waitUntilTableE
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { validate } from '@langchain/langgraph-checkpoint-validation';
 import { DynamoDBSaver } from '@serverless-agent/runtime';
-import { assertLocalStackReady, clientConfig } from './support/localstack.js';
+import { describe } from 'vitest';
+import { assertLocalStackReady, hasToken, clientConfig } from './support/localstack.js';
 
 const raw = new DynamoDBClient(clientConfig);
 const doc = DynamoDBDocumentClient.from(raw, { marshallOptions: { removeUndefinedValues: true } });
 const tables = new WeakMap<DynamoDBSaver, string>();
 let n = 0;
 
+function register(): void {
 validate({
   checkpointerName: 'DynamoDBSaver (LocalStack DynamoDB)',
   beforeAll: assertLocalStackReady,
@@ -30,3 +32,7 @@ validate({
     if (name) await raw.send(new DeleteTableCommand({ TableName: name }));
   },
 });
+}
+
+if (hasToken) register();
+else describe.skip('DynamoDBSaver conformance (LocalStack DynamoDB): LOCALSTACK_AUTH_TOKEN is not set', () => {});

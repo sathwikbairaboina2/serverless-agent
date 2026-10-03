@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ENDPOINT = process.env.AWS_ENDPOINT_URL ?? 'http://localhost:4566';
+/** Integration suites skip (not run) without a LocalStack token; see ADR 0009. */
+export const hasToken = Boolean(process.env.LOCALSTACK_AUTH_TOKEN);
 export const clientConfig = { endpoint: ENDPOINT, region: process.env.AWS_REGION ?? 'us-east-1', credentials: { accessKeyId: 'test', secretAccessKey: 'test' } };
 
 const here = path.dirname(fileURLToPath(import.meta.url));

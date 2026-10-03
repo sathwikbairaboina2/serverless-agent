@@ -12,7 +12,7 @@
     "synth": "pnpm --filter @serverless-agent/example-basic run synth",
     "local:up": "docker compose up -d --wait",
     "local:down": "docker compose down -v",
-    "local:deploy": "pnpm build && pnpm synth && node scripts/with-localstack-env.mjs node examples/basic/scripts/deploy-local.mjs",
-    "test:integration": "node scripts/with-localstack-env.mjs pnpm --filter @serverless-agent/integration-tests run test"
+    "local:deploy": "node scripts/with-localstack-env.mjs --require-token node -e 0 && pnpm build && pnpm synth && node scripts/with-localstack-env.mjs node examples/basic/scripts/deploy-local.mjs",
+    "test:integration": "node scripts/with-localstack-env.mjs --skip-without-token pnpm --filter @serverless-agent/integration-tests run test"
   }
 }
