@@ -1,6 +1,6 @@
 # ServerlessAgent
 
-**≈ $0.001 per agent run and $0 when idle (estimate, Nova Lite; [assumptions](docs/cost-estimate.md)).** A CDK construct that deploys a LangGraph.js agent on AWS Lambda with durable DynamoDB checkpoints, WebSocket token streaming and Step Functions human approval.
+**Passes LangGraph's official checkpointer conformance suite (718/718) on a DynamoDB single-table saver, with 869 unit tests and `cdk synth` output that has zero IAM wildcard actions.** Estimated cost: about $0.001 per agent run and $0 when idle (an estimate for Nova Lite, not measured; [assumptions](docs/cost-estimate.md)). A CDK construct that deploys a LangGraph.js agent on AWS Lambda with durable DynamoDB checkpoints, WebSocket token streaming and Step Functions human approval.
 
 The thesis is "the model proposes, the deterministic core disposes". The LLM can propose a sensitive tool call, but a deterministic gate node decides whether it runs. A sensitive call pauses the graph with `interrupt()`. Step Functions then holds a task token until a human approves through a single-use link. Unknown tools and malformed approvals fail closed.
 

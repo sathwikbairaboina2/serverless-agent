@@ -55,3 +55,4 @@ Finish task 4: complete (token unset: pnpm local:deploy exit 2 with ERROR messag
 Finish task 5: complete (runtime 18 files/814 tests, typecheck 0; `echo n | MODEL_ID=qwen3.8:27b pnpm --filter @serverless-agent/runtime run local` reached the approval prompt, declined, final assistant message, exit 0, no ERR_USE_AFTER_CLOSE; red phase not captured separately) | commit: "fix(runtime): handle piped stdin in local chat runner"
 Finish task 6: complete (LICENSE added, README License section) | commit: "docs: add MIT license"
 Finish task 7: complete (README headline now conformance 718/718, 869 tests (866 + 3 from task 5; reconfirmed in task 9), zero IAM wildcards; cost kept as labelled estimate) | commit: "docs: lead README with measured conformance result"
+Finish task 8: complete (docker run serverless-agent-mock-llm on 127.0.0.1:5470 -> /health {"ok":true}; removed, docker ps --filter name=serverless-agent- empty)
