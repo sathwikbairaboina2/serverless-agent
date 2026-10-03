@@ -1,0 +1,40 @@
+{
+  "name": "@serverless-agent/construct",
+  "version": "0.1.0",
+  "description": "AWS CDK construct: LangGraph.js agent on Lambda with DynamoDB checkpoints, Step Functions human approval and WebSocket streaming.",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "assets"
+  ],
+  "keywords": [
+    "aws-cdk",
+    "cdk-construct",
+    "langgraph",
+    "agent",
+    "lambda",
+    "step-functions",
+    "dynamodb"
+  ],
+  "scripts": {
+    "bundle": "node scripts/bundle-runtime.mjs",
+    "build": "pnpm run bundle && tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm run bundle && vitest run"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.272.0",
+    "constructs": "^10.0.0"
+  },
+  "devDependencies": {
+    "@serverless-agent/runtime": "workspace:^",
+    "@types/node": "24",
+    "aws-cdk-lib": "2.272.0",
+    "constructs": "10.8.1",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  }
+}
