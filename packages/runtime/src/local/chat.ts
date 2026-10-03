@@ -6,6 +6,7 @@ import { buildAgentGraph, pendingApproval } from '../agent/graph.js';
 import { createChatModel } from '../agent/model.js';
 import { demoTools } from '../agent/tools.js';
 import { textOf } from '../handlers/agent-step.js';
+import { createAnswerSource, isApproval } from './answers.js';
 
 const message = process.argv.slice(2).join(' ') || 'What time is it? Then email bob@example.com to say hi.';
 const graph = buildAgentGraph({
@@ -16,6 +17,8 @@ const graph = buildAgentGraph({
 });
 const config = { configurable: { thread_id: `local-${Date.now()}` } };
 const rl = createInterface({ input: stdin, output: stdout });
+// Piped stdin closes the readline before question() can run, so read buffered lines instead.  EOF declines.
+const nextLine = stdin.isTTY ? undefined : createAnswerSource(rl);
 
 let input: unknown = { messages: [new HumanMessage(message)] };
 for (;;) {
@@ -26,7 +29,7 @@ for (;;) {
     break;
   }
   console.log('\nThe model proposes:', JSON.stringify(approval.toolCalls, null, 2));
-  const answer = (await rl.question('approve? [y/N] ')).trim().toLowerCase();
-  input = new Command({ resume: { approved: answer === 'y', comment: answer === 'y' ? undefined : 'declined locally' } });
+  const answer = nextLine ? (console.log('approve? [y/N] (from stdin)'), await nextLine()) : await rl.question('approve? [y/N] ');
+  input = new Command({ resume: { approved: isApproval(answer), comment: isApproval(answer) ? undefined : 'declined locally' } });
 }
 rl.close();
