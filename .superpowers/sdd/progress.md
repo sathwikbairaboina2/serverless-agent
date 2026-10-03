@@ -47,3 +47,5 @@ Review round 1: unchanged-channel blob TTL refresh (UpdateCommand in put, fake s
 Ruling: finish plan draft reviewed by Opus - port allowance corrected to 5470-5479; review and handoff tasks removed (orchestrator/Opus own them); README headline must be measured (conformance 718/718), cost stays as a labelled estimate - session rule "headline number must come from measured output"
 Ruling: without LOCALSTACK_AUTH_TOKEN, test:integration and direct vitest skip with exit 0 (SKIPPED, not run); token set but LocalStack down stays BLOCKER exit 2; local:deploy without token exits 2 before building - a skipped test is honest, a deploy that did nothing must not report success
 Finish plan: 10 tasks; builder appends "Finish task N: complete (...)" lines below
+Finish task 1: complete (install frozen exit 0; typecheck exit 0; test runtime 811 + construct 48 + mock-llm 7 = 866; synth exit 0) | commit: none
+Finish task 2: complete (8 logical commits; git status checked clean of artifacts) | commit: "docs: add README, cost estimate and handoff"
