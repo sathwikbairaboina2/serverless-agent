@@ -1,0 +1,10 @@
+node_modules/
+lib/
+cdk.out/
+coverage/
+*.tsbuildinfo
+packages/construct/assets/
+examples/basic/cdk.local-outputs.json
+.env
+.env.*
+!.env.example
