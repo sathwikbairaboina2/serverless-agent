@@ -141,3 +141,7 @@ Measured on 2026-10-03 (see [DEVDOCS section 14](docs/DEVDOCS.md#14-results-v01)
 ## Status
 
 v0.1. **No real AWS deploy has been done yet**: only `cdk synth` and LocalStack. See [docs/handoff.md](docs/handoff.md) and [docs/DEVDOCS.md](docs/DEVDOCS.md).
+
+## License
+
+[MIT](LICENSE).
