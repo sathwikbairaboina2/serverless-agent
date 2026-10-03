@@ -1,0 +1,23 @@
+{
+  "name": "@serverless-agent/example-basic",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "synth": "cdk synth --no-notices --quiet"
+  },
+  "dependencies": {
+    "@serverless-agent/construct": "workspace:^",
+    "aws-cdk-lib": "2.272.0",
+    "constructs": "10.8.1"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.1146.0",
+    "@aws-sdk/client-s3": "^3.1146.0",
+    "@types/node": "24",
+    "aws-cdk": "2.1144.0",
+    "fflate": "^0.8.3",
+    "tsx": "^4.23.15",
+    "typescript": "5.9.3"
+  }
+}
