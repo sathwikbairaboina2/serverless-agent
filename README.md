@@ -1,6 +1,16 @@
-# ServerlessAgent
+# ⚡ ServerlessAgent
+
+> LangGraph on Lambda, as a CDK construct. DynamoDB checkpoints, human approval via task tokens, scale to zero.
 
 **Passes LangGraph's official checkpointer conformance suite (718/718) on a DynamoDB single-table saver, with 869 unit tests and `cdk synth` output that has zero IAM wildcard actions.** Estimated cost: about $0.001 per agent run and $0 when idle (an estimate for Nova Lite, not measured; [assumptions](docs/cost-estimate.md)). A CDK construct that deploys a LangGraph.js agent on AWS Lambda with durable DynamoDB checkpoints, WebSocket token streaming and Step Functions human approval.
+
+<!-- readme-header -->
+[![CI](https://github.com/sathwikbairaboina2/serverless-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/sathwikbairaboina2/serverless-agent/actions/workflows/ci.yml) ![License: MIT](https://img.shields.io/badge/license-MIT-blue) ![TypeScript](https://img.shields.io/badge/-TypeScript-555) ![AWS CDK](https://img.shields.io/badge/-AWS%20CDK-555) ![LangGraph.js](https://img.shields.io/badge/-LangGraph.js-555)
+
+| Measured | Source |
+|---|---|
+| **718 / 718 conformance** | `test/checkpointer/conformance.test.ts` |
+| **0 IAM wildcards** | `cdk.out templates` |
 
 The thesis is "the model proposes, the deterministic core disposes". The LLM can propose a sensitive tool call, but a deterministic gate node decides whether it runs. A sensitive call pauses the graph with `interrupt()`. Step Functions then holds a task token until a human approves through a single-use link. Unknown tools and malformed approvals fail closed.
 
