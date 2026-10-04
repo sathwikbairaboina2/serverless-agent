@@ -9,8 +9,8 @@
 
 | Measured | Source |
 |---|---|
-| **718 / 718 conformance** | `test/checkpointer/conformance.test.ts` |
-| **0 IAM wildcards** | `cdk.out templates` |
+| **718 / 718 conformance** | `packages/runtime/test/checkpointer/conformance.test.ts` |
+| **0 IAM wildcards** | `packages/construct/test/invariants.test.ts` |
 
 The thesis is "the model proposes, the deterministic core disposes". The LLM can propose a sensitive tool call, but a deterministic gate node decides whether it runs. A sensitive call pauses the graph with `interrupt()`. Step Functions then holds a task token until a human approves through a single-use link. Unknown tools and malformed approvals fail closed.
 
@@ -62,6 +62,8 @@ flowchart LR
 ```
 
 ## Usage
+
+The construct is not published to npm or Construct Hub yet. Use it from this pnpm workspace, as [`examples/basic/bin/app.ts`](examples/basic/bin/app.ts) does.
 
 ```ts
 import { App, Duration, Stack } from 'aws-cdk-lib';
